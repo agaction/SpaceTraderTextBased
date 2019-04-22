@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# Txt file
+*.txt
+
 # Log file
 *.log
 
