@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 
 public class SpaceTraderDriver {
 
@@ -24,8 +25,7 @@ public class SpaceTraderDriver {
      */
     public static void helpMenu() {
         System.out.println("HELP MENU\n-------------------------------\n"
-            + "'c' - See Credits\n"
-            + "'ch' - See Cargo Hold\n"
+            + "'i' - Player Information\n"
             + "'b' - Buy Goods\n"
             + "'s' - Sell Goods\n"
             + "'m' - See map of nearby systems\n"
@@ -64,6 +64,41 @@ public class SpaceTraderDriver {
         for (TradeGood tg : listGoods) {
             if (tg.getNameLowercase().equals(good.toLowerCase())) {
                 return tg;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper method to check if a user-inputted system is in the list of
+     * available systems (case insensitive) to travel to
+     * @param  target  target system
+     * @param  systems list of available systems
+     * @return true if target is in list, false otherwise
+     */
+    public static boolean containsSystem(String target,
+                                                    List<SolarSystem> systems) {
+        for (SolarSystem s : systems) {
+            if (s.getSystemName().toLowerCase().equals(target.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper method to convert the name of a system to its corresponding
+     * SolarSystem, or return null if the system is not found in that
+     * System's list of goods.
+     * @param  target  target system
+     * @param  systems list of available systems
+     * @return correct SolarSystem if found, null otherwise
+     */
+    public static SolarSystem nameToSystem(String target,
+                                                    List<SolarSystem> systems) {
+        for (SolarSystem s : systems) {
+            if (s.getSystemName().toLowerCase().equals(target.toLowerCase())) {
+                return s;
             }
         }
         return null;
@@ -145,33 +180,32 @@ public class SpaceTraderDriver {
             skills[3], difficulty);
         Universe universe = Universe.getInstance();
         universe.generateUniverse();
-        SolarSystem system = universe.getSolarSystems().get(0);
-        player.setSystem(system);
+        SolarSystem startSystem = universe.getSolarSystems().get(0);
+        player.setSystem(startSystem);
         Spaceship ship = player.getShip();
         Transaction market = new Transaction();
 
         System.out.println("Welcome to Space Trader!");
         System.out.println("At any time, enter 'h' to bring up a help menu "
             + "with all available commands.");
-        System.out.println("You are on the system " + system.getSystemName()
+        System.out.println("You are on the system " + startSystem.getSystemName()
             + ". " + prompt);
 
         String input = sc.next();
         while (true) {
             switch(input) {
 
-            //see current credits
-            case "c":
-            System.out.println("You currently have " + player.getCredits()
-                                + " credits. " + prompt);
-            input = sc.next();
-            break;
-
-            //see current cargo holds
-            case "ch":
+            //see player information
+            case "i":
+            System.out.print("PLAYER INFORMATION:\n You are on the planet "
+                                + player.getSystem().getSystemName()
+                                + ". You have " + player.getCredits()
+                                + " credits, and " + ship.getFuelLevel()
+                                + " fuel remaining for travel. ");
             System.out.println("You currently have " + ship.getQuantity()
                                 + " goods in holds, and can hold "
-                                + ship.getCargoMax() + " goods at maximum.");
+                                + ship.getCargoMax() + " goods at maximum. "
+                                + "These are the goods you have in hold:");
             if (ship.getQuantity() != 0) {
                 for (Map.Entry<TradeGood, Integer> entry :
                                         ship.getCargoList().entrySet()) {
@@ -183,13 +217,20 @@ public class SpaceTraderDriver {
             input = sc.next();
             break;
 
+            //see current cargo holds
+            case "ch":
+
+            System.out.println(prompt);
+            input = sc.next();
+            break;
+
             //buy goods
             case "b":
             System.out.println("You currently have " + player.getCredits()
                 + " credits. What would you like to buy? Please enter"
                 + " a good name and a quantity to buy, separated by a"
                 + " whitespace. Example: 'Water 5'\nAvailable Goods:");
-            for (TradeGood t : system.getListOfGoods()) {
+            for (TradeGood t : player.getSystem().getListOfGoods()) {
                 System.out.println(t);
             }
 
@@ -214,7 +255,8 @@ public class SpaceTraderDriver {
                 String buyInput = sc.nextLine();
                 String[] buyArr = buyInput.split(" ");
                 goodName = buyArr[0];
-                buyGood = nameToGood(goodName, system.getListOfGoods());
+                buyGood = nameToGood(goodName,
+                                        player.getSystem().getListOfGoods());
                 if (buyGood == null) {
                     System.out.println("Error: Input must have a valid good"
                         + " that can be bought on this system."
@@ -291,7 +333,8 @@ public class SpaceTraderDriver {
                 String sellInput = sc.nextLine();
                 String[] sellArr = sellInput.split(" ");
                 goodNameSell = sellArr[0];
-                sellGood = nameToGood(goodNameSell, system.getListOfGoods());
+                sellGood = nameToGood(goodNameSell,
+                                        player.getSystem().getListOfGoods());
                 if (sellGood == null) {
                     System.out.println("Error: Input must have a valid good"
                         + " that can be sold on this system."
@@ -328,15 +371,46 @@ public class SpaceTraderDriver {
 
             //galaxy map of nearby systems
             case "m":
-            System.out.println("This is not implemented yet. What else "
-                + "would you like to do?");
+            System.out.println("Nearby systems to travel to: ");
+            List<SolarSystem> nearbySystems = Travel.getTravelList(player, ship,
+                                                    universe.getSolarSystems());
+            System.out.println("Size: " + nearbySystems.size());
+            for (SolarSystem s : nearbySystems) {
+                System.out.println(s);
+            }
+            System.out.println(prompt);
             input = sc.next();
             break;
 
             //warp
             case "w":
-            System.out.println("This is not implemented yet. What else "
-                + "would you like to do?");
+            System.out.println("What system would you like to warp to? "
+                + "Please enter a valid system listed on the nearby map. "
+                + "If you need to see the map, press 'q' to quit, and then 'm'"
+                + " to pull up the map.");
+
+            if (sc.hasNext("q")) {
+                System.out.println("Quitting from warp.");
+                break;
+            } else {
+                List<SolarSystem> nearbySystemsT = Travel.getTravelList(player,
+                                            ship, universe.getSolarSystems());
+                String target = sc.next();
+                SolarSystem targetSystem = nameToSystem(target, nearbySystemsT);
+                if (targetSystem == null) {
+                    System.out.println("Error: Input must be a valid system"
+                        + " that can be travelled to. Please try again.");
+                } else {
+                    Travel.warp(player, ship, targetSystem);
+                    System.out.println("Restocking fuel automatically...");
+                    player.setCredits(player.getCredits() -
+                                    (ship.getParsecs() - ship.getFuelLevel()));
+                    ship.setFuelLevel(ship.getParsecs());
+                    System.out.println("You now have " + player.getCredits()
+                        + " credits remaining.");
+                    System.out.println(prompt);
+                }
+            }
             input = sc.next();
             break;
 

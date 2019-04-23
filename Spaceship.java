@@ -16,6 +16,7 @@ public enum Spaceship {
     private String name;
     private int hullStrength;
     private int parsecs;
+    private int fuelLevel;
     private int cargoMax;
     private Integer quantity;
     private HashMap<TradeGood, Integer> cargoList;
@@ -24,6 +25,7 @@ public enum Spaceship {
     Spaceship(String name, int parsecs, int cargoMax, int hullStrength){
         this.name = name;
         this.parsecs = parsecs;
+        this.fuelLevel = parsecs;
         this.cargoMax = cargoMax;
         this.hullStrength = hullStrength;
         quantity = 0;
@@ -64,6 +66,14 @@ public enum Spaceship {
 
     public int getParsecs(){
         return parsecs;
+    }
+
+    public int getFuelLevel() {
+        return fuelLevel;
+    }
+
+    public void setFuelLevel(int fuelLevel) {
+        this.fuelLevel = fuelLevel;
     }
 
     public int getCargoMax() {

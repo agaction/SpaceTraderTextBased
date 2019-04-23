@@ -65,5 +65,17 @@ public class SolarSystem implements Serializable {
     public List<TradeGood> getListOfGoods() {
         return listOfGoods;
     }
+
+    @Override
+    public String toString() {
+        String availableGoods = "";
+        for (TradeGood t : listOfGoods) {
+            availableGoods += t.name() + ", ";
+        }
+        availableGoods = availableGoods.replaceAll(", $", "");
+
+        return systemName + "\n - Tech Level: " + techLevel + "\n - Resources: "
+        + resources + "\n - Goods available to buy: " + availableGoods;
+    }
 }
 

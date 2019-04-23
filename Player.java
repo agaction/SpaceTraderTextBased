@@ -8,11 +8,8 @@ public class Player implements Serializable {
     private int traderSkill;
     private int engineerSkill;
     private String difficulty;
-
     private double credits;
     private Spaceship ship;
-    private int fuelLevel;
-    private Universe universe;
     private SolarSystem system;
 
     public Player() {
@@ -30,7 +27,6 @@ public class Player implements Serializable {
 
         credits = 1000.0;
         this.ship = Spaceship.Gnat;
-        fuelLevel = ship.getParsecs();
     }
 
     @Override
@@ -104,14 +100,6 @@ public class Player implements Serializable {
 
     public void setShip(Spaceship ship) {
         this.ship = ship;
-    }
-
-    public int getFuelLevel() {
-        return fuelLevel;
-    }
-
-    public void setFuelLevel(int fuelLevel) {
-        this.fuelLevel = fuelLevel;
     }
 
     public SolarSystem getSystem(){
