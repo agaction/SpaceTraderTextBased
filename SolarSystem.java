@@ -7,20 +7,31 @@ public class SolarSystem implements Serializable {
     private Location location;
     private TechLevel techLevel;
     private Resources resources;
-    private final List<TradeGood> listofResources;
+    private final List<TradeGood> listOfGoods;
 
-    public SolarSystem(String systemName, Location loc, TechLevel tl, Resources pol) {
+    public SolarSystem(String systemName, Location location,
+                                    TechLevel techLevel, Resources resources) {
         this.systemName = systemName;
-        this.location = loc;
-        this.techLevel = tl;
-        this.resources = pol;
-        this.location = loc;
-        this.listofResources = findGoodsAvailabletoBuy();
+        this.location = location;
+        this.techLevel = techLevel;
+        this.resources = resources;
+        this.listOfGoods = findGoodsAvailabletoBuy();
     }
 
     public SolarSystem() {
         systemName = "";
-        listofResources = null;
+        listOfGoods = null;
+    }
+
+    public List<TradeGood> findGoodsAvailabletoBuy() {
+        List<TradeGood> list = new ArrayList<TradeGood>();
+        for (TradeGood tg : TradeGood.values()) {
+            if (techLevel.getRank() >= tg.getMTLP()){
+                tg.generatePrice(this);
+                list.add(tg);
+            }
+        }
+        return list;
     }
 
     public Location getLocation() {
@@ -47,24 +58,12 @@ public class SolarSystem implements Serializable {
         return resources;
     }
 
-
     public void setResources(Resources resources) {
         this.resources = resources;
     }
 
-    public List<TradeGood> getListofResources() {
-        return listofResources;
-    }
-
-    public List<TradeGood> findGoodsAvailabletoBuy() {
-        List<TradeGood> list = new ArrayList<TradeGood>();
-        for (TradeGood tg : TradeGood.values()) {
-            if (techLevel.getRank() >= tg.getMTLP()){
-                tg.generatePrice(this);
-                list.add(tg);
-            }
-        }
-        return list;
+    public List<TradeGood> getListOfGoods() {
+        return listOfGoods;
     }
 }
 

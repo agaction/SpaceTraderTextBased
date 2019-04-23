@@ -71,12 +71,24 @@ public enum TradeGood {
         return number;
     }
 
+    public String getNameLowercase() {
+        return name().toLowerCase();
+    }
+
     public void generatePrice(SolarSystem s) {
         currentPrice = basePrice + (IPL * (s.getTechLevel().getRank() - MTLP))
                                     + getVariance();
+        if (currentPrice < 0) {
+            System.out.println("ranks: " + s.getTechLevel().getRank() + ", " + MTLP);
+        }
     }
 
     public double getCurrentPrice() {
         return currentPrice;
+    }
+
+    @Override
+    public String toString() {
+        return name() + ": $" + currentPrice;
     }
 }

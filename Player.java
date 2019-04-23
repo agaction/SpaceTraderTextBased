@@ -9,14 +9,11 @@ public class Player implements Serializable {
     private int engineerSkill;
     private String difficulty;
 
-    private int credits;
+    private double credits;
     private Spaceship ship;
     private int fuelLevel;
     private Universe universe;
     private SolarSystem system;
-
-    private boolean loaded;
-    private double money;
 
     public Player() {
 
@@ -31,11 +28,9 @@ public class Player implements Serializable {
         engineerSkill = engineer;
         difficulty = difficulty;
 
-        credits = 1000;
+        credits = 1000.0;
         this.ship = Spaceship.Gnat;
-        money = 1000;
         fuelLevel = ship.getParsecs();
-        loaded = false;
     }
 
     @Override
@@ -95,11 +90,11 @@ public class Player implements Serializable {
         this.difficulty = difficulty;
     }
 
-    public int getCredits() {
+    public double getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
+    public void setCredits(double credits) {
         this.credits = credits;
     }
 
@@ -119,14 +114,6 @@ public class Player implements Serializable {
         this.fuelLevel = fuelLevel;
     }
 
-    //    public Universe getUniverse() {
-    //        return universe;
-    //    }
-
-    //    public void setUniverse(Universe universe) {
-    //        this.universe = universe;
-    //    }
-
     public SolarSystem getSystem(){
         return system;
     }
@@ -134,25 +121,4 @@ public class Player implements Serializable {
     public void setSystem(SolarSystem system) {
         this.system = system;
     }
-
-    public void updateSolarSystem(SolarSystem s){
-        this.system = s;
-    }
-
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
-    }
-
-    public double getMoney(){
-        return money;
-    }
-
-    public void setMoney(double m){
-        money = m;
-    }
-
 }

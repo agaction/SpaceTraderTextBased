@@ -28,12 +28,10 @@ public enum Spaceship {
         this.hullStrength = hullStrength;
         quantity = 0;
         cargoList = new HashMap<TradeGood, Integer>();
-        sizeCargoList = 0;
     }
 
     public boolean canBuy(int quantity){
-
-        return sizeCargoList + quantity <= cargoMax;
+        return this.quantity + quantity <= cargoMax;
     }
 
     public void addToList(TradeGood t, int quantity) {
@@ -102,13 +100,5 @@ public enum Spaceship {
 
     public Map<TradeGood, Integer> getCargoList() {
         return cargoList;
-    }
-
-    public int getSizeCargoList() {
-        return sizeCargoList;
-    }
-
-    public void setSizeCargoList(int size){
-        sizeCargoList = size;
     }
 }
