@@ -79,7 +79,7 @@ public enum TradeGood {
         currentPrice = basePrice + (IPL * (s.getTechLevel().getRank() - MTLP))
                                     + getVariance();
         if (currentPrice < 0) {
-            System.out.println("ranks: " + s.getTechLevel().getRank() + ", " + MTLP);
+            currentPrice = -currentPrice; //quick functional fix to an odd bug
         }
     }
 

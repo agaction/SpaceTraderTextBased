@@ -193,7 +193,7 @@ public class SpaceTraderDriver {
                 System.out.println(t);
             }
 
-            sc.nextLine(); //check if needed
+            sc.nextLine(); //read empty newline character
             boolean contBuying = true;
             String goodName;
             int quantity = 0;
@@ -203,12 +203,12 @@ public class SpaceTraderDriver {
                 invalid2 = false;
                 checkExit(sc);
                 if (sc.hasNext("q")) {
-                    System.out.println("Quitting from buy. ");
+                    System.out.println("Quitting from buy.");
                     sc.nextLine();
                     contBuying = false;
                     continue; // I normally consider this bad practice,
                               // but it was not worth the time restructuring the
-                              // loop to avoid this or a continue statement
+                              // loop to avoid this or a break statement
                 }
 
                 String buyInput = sc.nextLine();
@@ -252,9 +252,10 @@ public class SpaceTraderDriver {
             //sell goods
             case "s":
             System.out.println("You currently have " + player.getCredits()
-                + " credits.");
+                + " credits. Cargo: ");
             if (ship.getQuantity() != 0) {
-                for (Map.Entry<TradeGood, Integer> entry : ship.getCargoList().entrySet()) {
+                for (Map.Entry<TradeGood, Integer> entry :
+                                            ship.getCargoList().entrySet()) {
                     System.out.println(entry.getKey() + " - "
                         + entry.getValue());
                 }
@@ -262,11 +263,70 @@ public class SpaceTraderDriver {
                 + "Please enter the name of a good and a quantity "
                 + "to sell, separated by a whitespace. "
                 + "Example: ROBOTS 10");
+            } else {
+                System.out.println("EMPTY - you have no goods to sell!");
+                System.out.println("What else would you like to do?");
+                input = sc.next();
+                break; //Is there a better way? probably...
             }
+
+            sc.nextLine(); //read empty newline character
+            boolean contSelling = true;
+            String goodNameSell;
+            int quantitySell = 0;
+            TradeGood sellGood;
+            boolean invalid3;
+            do {
+                invalid3 = false;
+                checkExit(sc);
+                if (sc.hasNext("q")) {
+                    System.out.println("Quitting from sell.");
+                    sc.nextLine();
+                    contSelling = false;
+                    continue; // I normally consider this bad practice,
+                              // but it was not worth the time restructuring the
+                              // loop to avoid this or a break statement
+                }
+
+                String sellInput = sc.nextLine();
+                String[] sellArr = sellInput.split(" ");
+                goodNameSell = sellArr[0];
+                sellGood = nameToGood(goodNameSell, system.getListOfGoods());
+                if (sellGood == null) {
+                    System.out.println("Error: Input must have a valid good"
+                        + " that can be sold on this system."
+                        + " Please try again.");
+                    invalid3 = true;
+                } else if (sellArr.length < 2) {
+                    System.out.println("Error: you must input a good name "
+                                    + "and a quantity. Please try again.");
+                    invalid3 = true;
+                }
+                if (!invalid3) {
+                    try {
+                        quantitySell = Integer.parseInt(sellArr[1]);
+                        if (quantitySell <= 0) {
+                            System.out.println("Error: quantity must be "
+                                + "positive. Please try again.");
+                            invalid3 = true;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: quantity must be a valid "
+                            + "integer. Please try again.");
+                        invalid3 = true;
+                    }
+                }
+
+                if(!invalid3) {
+                    market.sell(player, sellGood, quantitySell);
+                }
+            } while (contSelling);
+
+            System.out.println(prompt);
             input = sc.next();
             break;
 
-            //map
+            //galaxy map of nearby systems
             case "m":
             System.out.println("This is not implemented yet. What else "
                 + "would you like to do?");
